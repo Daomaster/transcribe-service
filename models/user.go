@@ -13,7 +13,7 @@ type User struct {
 }
 
 // function to create an user
-func CreateUser(username string, password string) error {
+func CreateUser(username string, password string) (int64, error) {
 	// encode the password
 	pEnc := base64.StdEncoding.EncodeToString([]byte(password))
 
@@ -24,10 +24,10 @@ func CreateUser(username string, password string) error {
 	}
 
 	if err := db.Model(User{}).Create(&u).Error; err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	return u.ID, nil
 }
 
 // function to validate username and password

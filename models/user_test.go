@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	mocket "github.com/selvatico/go-mocket"
 	"github.com/stretchr/testify/assert"
+	"math/rand"
 	"testing"
 )
 
@@ -18,14 +19,17 @@ func TestCreateUser(t *testing.T) {
 
 	InitMockModel()
 
+	var expectedId = rand.Int63n(100)
+
 	// mock the insert package
-	mocket.Catcher.NewMock().WithQuery(`INSERT  INTO "users" ("username","password") VALUES (?,?)`)
+	mocket.Catcher.NewMock().WithQuery(`INSERT  INTO "users" ("username","password") VALUES (?,?)`).WithID(expectedId)
 	defer mocket.Catcher.Reset()
 
-	err := CreateUser(username, password)
+	id, err := CreateUser(username, password)
 
 	// check the results
 	a.Nil(err, "there should be no errors")
+	a.Equal(expectedId, id, "the id should match as expected")
 }
 
 // test to make sure there will error return when exception from db
@@ -38,7 +42,7 @@ func TestCreateUser_Exception(t *testing.T) {
 	mocket.Catcher.NewMock().WithQuery(`INSERT  INTO "users" ("username","password") VALUES (?,?)`).WithExecException()
 	defer mocket.Catcher.Reset()
 
-	err := CreateUser(username, password)
+	_, err := CreateUser(username, password)
 
 	// check the results
 	a.NotNil(err, "there should be error")
