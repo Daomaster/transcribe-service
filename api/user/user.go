@@ -20,7 +20,7 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	err := models.CreateUser(req.Username, req.Password)
+	_, err := models.CreateUser(req.Username, req.Password)
 	if err != nil {
 		// other exceptions
 		c.JSON(http.StatusInternalServerError, e.InternalError(err))

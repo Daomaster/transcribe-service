@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/Daomaster/transcribe-service/config"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/sirupsen/logrus"
 )
 

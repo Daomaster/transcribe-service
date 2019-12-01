@@ -49,7 +49,6 @@ func InitConfig() {
 		v.BindEnv("MYSQL_ROOT_PWD")
 		v.BindEnv("MYSQL_HOSTNAME")
 		v.BindEnv("MYSQL_USER")
-		v.BindEnv("MAP_API_KEY")
 		v.BindEnv("AWS_ACCESS_KEY_ID")
 		v.BindEnv("AWS_SECRET_ACCESS_KEY")
 	} else {
