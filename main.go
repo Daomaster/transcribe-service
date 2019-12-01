@@ -4,6 +4,7 @@ import (
 	"github.com/Daomaster/transcribe-service/api"
 	"github.com/Daomaster/transcribe-service/config"
 	"github.com/Daomaster/transcribe-service/models"
+	"github.com/Daomaster/transcribe-service/services/storage"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -11,6 +12,7 @@ import (
 func init() {
 	config.InitConfig()
 	models.InitModel()
+	storage.InitS3Bucket()
 }
 
 func main() {
