@@ -18,7 +18,7 @@ func TestCreateTranscription(t *testing.T) {
 	mocket.Catcher.NewMock().WithQuery(`INSERT  INTO "transcriptions" ("id","user_id","file_path","result") VALUES (?,?,?,?)`)
 	defer mocket.Catcher.Reset()
 
-	id, err := CreateTranscription(expectedId,"path", 1, "json")
+	id, err := CreateTranscription(expectedId, "path", 1, "json")
 
 	// check the results
 	a.Nil(err, "there should be no error")
@@ -34,7 +34,7 @@ func TestCreateTranscription_Exception(t *testing.T) {
 	mocket.Catcher.NewMock().WithQuery(`INSERT  INTO "transcriptions" ("id","user_id","file_path","result") VALUES (?,?,?,?)`).WithExecException()
 	defer mocket.Catcher.Reset()
 
-	_, err := CreateTranscription("id1","path", 1, "json")
+	_, err := CreateTranscription("id1", "path", 1, "json")
 
 	// check the results
 	a.NotNil(err, "there should be error")

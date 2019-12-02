@@ -31,7 +31,7 @@ func InitS3Bucket() {
 	client.uploader = u
 	client.bucketName = bucketName
 
-	StorageClient = &client
+	Client = &client
 }
 
 // function that takes a stream and upload to s3, return the location url

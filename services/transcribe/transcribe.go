@@ -1,7 +1,9 @@
 package transcribe
 
+var Client Transcribe
+
 // transcription service interface
-type Transcriber interface {
+type Transcribe interface {
 	// transcription takes a storage url then output the json string result
-	Transcribe(storagePath string) (string, error)
+	Transcribe(id string, storagePath string) (string, error)
 }

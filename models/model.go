@@ -18,6 +18,8 @@ func InitModel() {
 	if err != nil {
 		logrus.Fatal(err)
 	}
+
+	migrate()
 }
 
 // initialize the tables based on the model if not exist

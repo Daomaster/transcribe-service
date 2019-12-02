@@ -10,7 +10,7 @@ type Transcription struct {
 	User     *User  `gorm:"FOREIGNKEY:UserID" json:"user"`
 	UserID   int64  `json:"-"`
 	FilePath string `json:"file_path"`
-	Result   string `json:"result"`
+	Result   string `json:"result" sql:"type:longtext"`
 }
 
 // function to create an transcription

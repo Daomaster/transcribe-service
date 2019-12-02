@@ -2,7 +2,7 @@ package storage
 
 import "io"
 
-var StorageClient Storage
+var Client Storage
 
 // storage interface
 type Storage interface {
