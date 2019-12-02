@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	mocket "github.com/selvatico/go-mocket"
 	"github.com/stretchr/testify/assert"
-	"math/rand"
 	"testing"
 )
 
@@ -14,12 +13,12 @@ func TestCreateTranscription(t *testing.T) {
 
 	InitMockModel()
 
-	var expectedId = rand.Int63n(100)
+	var expectedId = "id1"
 
-	mocket.Catcher.NewMock().WithQuery(`INSERT  INTO "transcriptions" ("user_id","file_path","result") VALUES (?,?,?)`).WithID(expectedId)
+	mocket.Catcher.NewMock().WithQuery(`INSERT  INTO "transcriptions" ("id","user_id","file_path","result") VALUES (?,?,?,?)`)
 	defer mocket.Catcher.Reset()
 
-	id, err := CreateTranscription("path", 1, "json")
+	id, err := CreateTranscription(expectedId,"path", 1, "json")
 
 	// check the results
 	a.Nil(err, "there should be no error")
@@ -32,10 +31,10 @@ func TestCreateTranscription_Exception(t *testing.T) {
 
 	InitMockModel()
 
-	mocket.Catcher.NewMock().WithQuery(`INSERT  INTO "transcriptions" ("user_id","file_path","result") VALUES (?,?,?)`).WithExecException()
+	mocket.Catcher.NewMock().WithQuery(`INSERT  INTO "transcriptions" ("id","user_id","file_path","result") VALUES (?,?,?,?)`).WithExecException()
 	defer mocket.Catcher.Reset()
 
-	_, err := CreateTranscription("path", 1, "json")
+	_, err := CreateTranscription("id1","path", 1, "json")
 
 	// check the results
 	a.NotNil(err, "there should be error")
@@ -49,7 +48,7 @@ func TestGetTranscription(t *testing.T) {
 
 	// set up expected result
 	transcription1 := Transcription{
-		ID:       1,
+		ID:       "id1",
 		UserID:   1,
 		User:     nil,
 		FilePath: "testpath1",
@@ -57,7 +56,7 @@ func TestGetTranscription(t *testing.T) {
 	}
 
 	transcription2 := Transcription{
-		ID:       2,
+		ID:       "id2",
 		UserID:   2,
 		User:     nil,
 		FilePath: "testpath2",
@@ -107,7 +106,7 @@ func TestGetTranscriptionByID(t *testing.T) {
 
 	// set up expected result
 	transcription1 := Transcription{
-		ID:       1,
+		ID:       "id1",
 		UserID:   1,
 		User:     nil,
 		FilePath: "testpath1",
@@ -122,7 +121,7 @@ func TestGetTranscriptionByID(t *testing.T) {
 	_ = json.Unmarshal(i, &expectMap)
 
 	// mock the query that query the orders
-	mocket.Catcher.NewMock().WithQuery(`SELECT * FROM "transcriptions"  WHERE (id = 1) ORDER BY "transcriptions"."id" ASC LIMIT 1`).WithReply(expectMap)
+	mocket.Catcher.NewMock().WithQuery(`SELECT * FROM "transcriptions"  WHERE (id = id1) ORDER BY "transcriptions"."id" ASC LIMIT 1`).WithReply(expectMap)
 	defer mocket.Catcher.Reset()
 
 	result, err := GetTranscriptionByID(transcription1.ID)
@@ -140,10 +139,10 @@ func TestGetTranscriptionByID_Exception(t *testing.T) {
 	InitMockModel()
 
 	// mock the query that query the orders
-	mocket.Catcher.NewMock().WithQuery(`SELECT * FROM "transcriptions"  WHERE (id = 1) ORDER BY "transcriptions"."id" ASC LIMIT 1`).WithQueryException()
+	mocket.Catcher.NewMock().WithQuery(`SELECT * FROM "transcriptions"  WHERE (id = id1) ORDER BY "transcriptions"."id" ASC LIMIT 1`).WithQueryException()
 	defer mocket.Catcher.Reset()
 
-	_, err := GetTranscriptionByID(1)
+	_, err := GetTranscriptionByID("id1")
 
 	// check if the results match
 	a.NotNil(err, "should be error")

@@ -1,10 +1,12 @@
 package models
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 // gorm model for transcription
 type Transcription struct {
-	ID       int64  `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"id"`
+	ID       string `gorm:"PRIMARY_KEY" json:"id"`
 	User     *User  `gorm:"FOREIGNKEY:UserID" json:"user"`
 	UserID   int64  `json:"-"`
 	FilePath string `json:"file_path"`
@@ -12,16 +14,17 @@ type Transcription struct {
 }
 
 // function to create an transcription
-func CreateTranscription(filepath string, userID int64, result string) (int64, error) {
+func CreateTranscription(id string, storagePath string, userID int64, result string) (string, error) {
 	// create transcription
 	t := Transcription{
+		ID:       id,
 		UserID:   userID,
-		FilePath: filepath,
+		FilePath: storagePath,
 		Result:   result,
 	}
 
 	if err := db.Model(Transcription{}).Create(&t).Error; err != nil {
-		return 0, err
+		return "", err
 	}
 
 	return t.ID, nil
@@ -40,7 +43,7 @@ func GetTranscription() ([]*Transcription, error) {
 }
 
 // function to get transcription by id
-func GetTranscriptionByID(id int64) (*Transcription, error) {
+func GetTranscriptionByID(id string) (*Transcription, error) {
 	var transcription []*Transcription
 
 	err := db.Model(Transcription{}).Where("id = ?", id).First(&transcription).Error

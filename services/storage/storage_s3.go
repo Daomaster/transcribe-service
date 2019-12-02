@@ -4,7 +4,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
-	"github.com/google/uuid"
 	"io"
 	"path"
 )
@@ -25,7 +24,7 @@ func InitS3Bucket() {
 	// create the s3 manager uploader
 	u := s3manager.NewUploader(sess)
 
-	// create the client
+	// create the service client
 	var client s3Client
 	client.uploader = u
 
@@ -33,9 +32,9 @@ func InitS3Bucket() {
 }
 
 // function that takes a stream and upload to s3, return the location url
-func (s *s3Client) Upload(filename string, input io.Reader) (string, error) {
+func (s *s3Client) Upload(id string, filename string, input io.Reader) (string, error) {
 	// generate the s3 key which combines uuid and filename
-	key := path.Join(uuid.New().String(), filename)
+	key := path.Join(id, filename)
 
 	// upload to s3 bucket
 	result, err := s.uploader.Upload(&s3manager.UploadInput{
