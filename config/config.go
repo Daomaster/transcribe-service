@@ -10,7 +10,8 @@ var config *Configuration
 const ConnectionStringFormat = "%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local"
 
 type Configuration struct {
-	DbConfig *DbConfiguration
+	DbConfig      *DbConfiguration
+	AwsBucketName string
 }
 
 type DbConfiguration struct {
@@ -49,14 +50,17 @@ func InitConfig() {
 		v.BindEnv("MYSQL_ROOT_PWD")
 		v.BindEnv("MYSQL_HOSTNAME")
 		v.BindEnv("MYSQL_USER")
-		v.BindEnv("AWS_ACCESS_KEY_ID")
-		v.BindEnv("AWS_SECRET_ACCESS_KEY")
+		v.BindEnv("AWS_BUCKET_NAME")
 	} else {
 		// overwrite if env is present
 		v.AutomaticEnv()
 	}
 
 	config = new(Configuration)
+
+	bucketName := v.GetString("AWS_BUCKET_NAME")
+
+	config.AwsBucketName = bucketName
 
 	var dbConfig DbConfiguration
 	dbConfig.port = v.GetInt("MYSQL_PORT")
