@@ -1,44 +1,48 @@
 package api
 
 import (
-	"github.com/Daomaster/transcribe-service/api/login"
+	"github.com/Daomaster/transcribe-service/api/middleware"
 	"github.com/Daomaster/transcribe-service/api/transcription"
 	"github.com/Daomaster/transcribe-service/api/user"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func InitRouter() *gin.Engine {
 	r := gin.New()
 
+	// get the auth middleware
+	authMiddleware, err := middleware.GetAuthMiddleware()
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
 	// user routes
 	userRoute := r.Group(`/users`)
-
 	userRoute.Use()
 	{
 		// create user
 		userRoute.POST("", user.CreateUser)
 	}
 
-	// login routes
-	loginRoute := r.Group(`/login`)
-
-	loginRoute.Use()
+	// auth routes
+	authRoute := r.Group(`/auth`)
+	authRoute.Use()
 	{
-		// login user
-		loginRoute.POST("", login.Login)
+		// login
+		authRoute.POST(`/login`, authMiddleware.LoginHandler)
+		// refresh token
+		authRoute.GET(`/refresh`, authMiddleware.RefreshHandler)
 	}
 
 	// transcription routes
 	transcriptionRoute := r.Group(`/transcription`)
-
-	transcriptionRoute.Use()
+	transcriptionRoute.Use(authMiddleware.MiddlewareFunc())
 	{
 		// create transcription
 		transcriptionRoute.POST("", transcription.CreateTranscription)
-
 		// get transcription
 		transcriptionRoute.GET("", transcription.GetTranscription)
-
 		// get specific transcription
 		transcriptionRoute.GET("/:id", transcription.GetTranscriptionByID)
 	}
