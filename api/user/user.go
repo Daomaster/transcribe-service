@@ -22,6 +22,12 @@ func CreateUser(c *gin.Context) {
 
 	_, err := models.CreateUser(req.Username, req.Password)
 	if err != nil {
+		// check if user already registered
+		if err == models.ErrUserAlreadyExist {
+			c.JSON(http.StatusBadRequest, e.CreateErr(err))
+			return
+		}
+
 		// other exceptions
 		c.JSON(http.StatusInternalServerError, e.InternalError(err))
 		return
