@@ -3,7 +3,6 @@ module github.com/Daomaster/transcribe-service
 go 1.12
 
 require (
-	github.com/appleboy/gin-jwt v2.5.0+incompatible // indirect
 	github.com/appleboy/gin-jwt/v2 v2.6.2
 	github.com/aws/aws-sdk-go v1.25.43
 	github.com/gin-gonic/gin v1.5.0
