@@ -87,6 +87,12 @@ func GetTranscription(c *gin.Context) {
 	// get the transcription from db
 	t, err := models.GetTranscription()
 	if err != nil {
+		// no rows return then just return empty array
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusOK, []models.Transcription{})
+			return
+		}
+
 		c.JSON(http.StatusInternalServerError, e.InternalError(err))
 		return
 	}

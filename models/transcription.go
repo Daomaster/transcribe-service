@@ -47,7 +47,7 @@ func GetTranscription() ([]*Transcription, error) {
 
 	// get the data from the raw sql rows
 	trans, err := mapTranscriptionFromRow(rows)
-	if err != nil && err != gorm.ErrRecordNotFound {
+	if err != nil {
 		return nil, err
 	}
 
