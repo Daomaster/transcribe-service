@@ -24,5 +24,6 @@ func InitModel() {
 
 // initialize the tables based on the model if not exist
 func migrate() {
-	db.AutoMigrate(&User{}, &Transcription{})
+	db.AutoMigrate(User{})
+	db.AutoMigrate(Transcription{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
 }

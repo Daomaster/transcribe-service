@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-const userIdKey = "userId"
+const UserIdKey = "userId"
 
 // function to config the gin jwt middleware and return the middleware
 func GetAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
@@ -21,7 +21,7 @@ func GetAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(int64); ok {
 				return jwt.MapClaims{
-					userIdKey: v,
+					UserIdKey: v,
 				}
 			}
 			return jwt.MapClaims{}
@@ -29,7 +29,7 @@ func GetAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 			return &models.User{
-				ID: int64(claims[userIdKey].(float64)),
+				ID: int64(claims[UserIdKey].(float64)),
 			}
 		},
 		Authenticator: login.Login,

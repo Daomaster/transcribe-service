@@ -18,7 +18,7 @@ func InitRouter() *gin.Engine {
 	}
 
 	// user routes
-	userRoute := r.Group(`/users`)
+	userRoute := r.Group(`/api/users`)
 	userRoute.Use()
 	{
 		// create user
@@ -26,7 +26,7 @@ func InitRouter() *gin.Engine {
 	}
 
 	// auth routes
-	authRoute := r.Group(`/auth`)
+	authRoute := r.Group(`/api/auth`)
 	authRoute.Use()
 	{
 		// login
@@ -36,7 +36,7 @@ func InitRouter() *gin.Engine {
 	}
 
 	// transcription routes
-	transcriptionRoute := r.Group(`/transcription`)
+	transcriptionRoute := r.Group(`/api/transcription`)
 	transcriptionRoute.Use(authMiddleware.MiddlewareFunc())
 	{
 		// create transcription
