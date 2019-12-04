@@ -12,7 +12,7 @@ var (
 
 // gorm model for user
 type User struct {
-	ID       int64 `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"id"`
+	ID       int64 `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"-"`
 	Username string `json:"username"`
 	Password string `json:"-"`
 }

@@ -129,7 +129,7 @@ func columnMapper(colName string, t *Transcription) (interface{}, error) {
 	case "file_path":
 		return &t.FilePath, nil
 	case "file_name":
-		return &t.FilePath, nil
+		return &t.FileName, nil
 	case "result":
 		return &t.Result, nil
 	case "user_id":
