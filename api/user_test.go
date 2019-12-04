@@ -6,6 +6,7 @@ import (
 	"github.com/Daomaster/transcribe-service/api/user"
 	"github.com/Daomaster/transcribe-service/models"
 	"github.com/Daomaster/transcribe-service/pkgs/e"
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
@@ -44,6 +45,18 @@ func parseJson(b io.Reader, i interface{}) error {
 	return nil
 }
 
+func initUserRoute() *gin.Engine {
+	r := gin.New()
+	userRoute := r.Group(`/api/users`)
+	userRoute.Use()
+	{
+		// create user
+		userRoute.POST("", user.CreateUser)
+	}
+
+	return r
+}
+
 // test success from create user
 func TestCreateUser(t *testing.T) {
 	a := assert.New(t)
@@ -52,7 +65,7 @@ func TestCreateUser(t *testing.T) {
 	models.InitMockModel()
 
 	// get the router
-	r := InitRouter()
+	r := initUserRoute()
 
 	// create request body
 	var createUser user.CreateUserRequest
@@ -64,7 +77,7 @@ func TestCreateUser(t *testing.T) {
 
 	// make request to recorder
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodPost, "/users", reqBody)
+	req, _ := http.NewRequest(http.MethodPost, "/api/users", reqBody)
 	r.ServeHTTP(w, req)
 
 	// check response code
@@ -79,7 +92,7 @@ func TestCreateUser_BadRequest(t *testing.T) {
 	models.InitMockModel()
 
 	// get the router
-	r := InitRouter()
+	r := initUserRoute()
 
 	// create request body
 	var createUser user.CreateUserRequest
@@ -90,7 +103,7 @@ func TestCreateUser_BadRequest(t *testing.T) {
 
 	// make request to recorder
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodPost, "/users", reqBody)
+	req, _ := http.NewRequest(http.MethodPost, "/api/users", reqBody)
 	r.ServeHTTP(w, req)
 
 	// check response code

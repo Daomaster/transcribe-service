@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/jinzhu/gorm"
 )
 
@@ -82,16 +83,29 @@ func mapTranscriptionFromRow(rows *sql.Rows) ([]*Transcription, error) {
 
 	defer rows.Close()
 
-	// scan each row
+	// get all the columns
+	columns, err := rows.Columns()
+	if err != nil {
+		return nil, err
+	}
+
+	// scan each row in to the struct
 	for rows.Next() {
-		var u User
 		var t Transcription
-		err := rows.Scan(&t.ID, &t.FilePath, &t.Result, &t.FileName, &u.ID, &u.Username)
+
+		cols := make([]interface{}, len(columns))
+		for i := 0; i < len(columns); i++ {
+			cols[i], err = columnMapper(columns[i], &t)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		err = rows.Scan(cols...)
 		if err != nil {
 			return nil, err
 		}
 
-		t.User = &u
 		trans = append(trans, &t)
 	}
 
@@ -101,4 +115,28 @@ func mapTranscriptionFromRow(rows *sql.Rows) ([]*Transcription, error) {
 	}
 
 	return trans, nil
+}
+
+// helper function to map the database field to the struct properly
+func columnMapper(colName string, t *Transcription) (interface{}, error) {
+	// init the user property
+	var user User
+	t.User = &user
+
+	switch colName {
+	case "id":
+		return &t.ID, nil
+	case "file_path":
+		return &t.FilePath, nil
+	case "file_name":
+		return &t.FilePath, nil
+	case "result":
+		return &t.Result, nil
+	case "user_id":
+		return &t.User.ID, nil
+	case "username":
+		return &t.User.Username, nil
+	default:
+		return nil, errors.New("unknown column")
+	}
 }

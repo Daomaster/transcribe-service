@@ -14,8 +14,8 @@ const UserIdKey = "userId"
 // function to config the gin jwt middleware and return the middleware
 func GetAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
-		Realm:       "test zone",
-		Key:         []byte("secret key"),
+		Realm:       "zone",
+		Key:         []byte("my secret"),
 		Timeout:     time.Hour,
 		MaxRefresh:  time.Hour,
 		PayloadFunc: func(data interface{}) jwt.MapClaims {

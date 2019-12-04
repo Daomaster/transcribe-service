@@ -22,6 +22,7 @@ func CreateErr(err error) *ResponseError {
 
 // function to return internal 500 error
 // takes the actual error for logging and return the generic error as response
+// in real prod it should use ELK or something, so it will be easier to maintain
 func InternalError(err error) *ResponseError {
 	logrus.Error(err)
 
