@@ -1,0 +1,47 @@
+version: '2.1'
+
+services:
+  transcribe-ui:
+    image: daomaster/transcribe-service:latest
+    restart: on-failure
+    ports:
+      - "80:80"
+    depends_on:
+      transcribe-service:
+        condition: service_started
+      db:
+        condition: service_healthy
+
+  transcribe-service:
+    image: daomaster/transcribe-service:latest
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8888:8888"
+    environment:
+      - MYSQL_ROOT_PWD=${MYSQL_PASSWORD}
+      - MYSQL_HOSTNAME=db
+      - MYSQL_USER=${MYSQL_USER}
+      - AWS_BUCKET_NAME=${BUCKET_NAME}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - GIN_MODE=release
+
+  db:
+    image: mysql:5.7
+    healthcheck:
+      test: ["CMD-SHELL", 'mysql --database=$$MYSQL_DATABASE --password=$$MYSQL_ROOT_PASSWORD --execute="SELECT count(table_name) > 0 FROM information_schema.tables;" --skip-column-names -B']
+      interval: 20s
+      timeout: 5s
+      retries: 4
+    # expose it on localhost 3306, can be accessed over ssh pass through
+    ports:
+    - "3306:3306"
+    volumes:
+      - /opt/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=transcription-service
