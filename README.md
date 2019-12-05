@@ -7,7 +7,8 @@ And under the hood it is using the AWS transcribe service.
 The application allow user to upload a mp4 file and get the transcript from AWS transcribe service.
 
 ### API
-Note: The postman collection is in the /utility directory
+Note: The postman collection and environment is in the /utility directory, 
+and in the collection the `POST /api/auth/login` request will automatically embed jwt in the postman environment after get the response.
 
 ```sh
 POST /api/users    
